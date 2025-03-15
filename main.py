@@ -11,7 +11,7 @@ from ultralytics import YOLO
 #model.export(format="onnx")
 
 # load haarcascades model for face-detection task
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def face_detection():
     # Open the default webcam
@@ -31,14 +31,18 @@ def face_detection():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Detect faces in the grayscale frame
-        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10, minSize=(20, 20))
 
         # Draw rectangles around detected faces
         
-        for (x, y, w, h) in faces:
+        for x, y, w, h in faces:
+            text = "face"
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            # Draw bounding box 
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 1)
-            #cv2.putText('Face', (x, y-10), 
-            #      cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            # Put text on bounding box
+            cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (255, 0, 0), 1)
+
 
         # Display the output
         cv2.imshow('Face Detection', frame)
