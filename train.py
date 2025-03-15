@@ -24,8 +24,8 @@ class Training:
 
 
 # The main program
-def main(path_to_dataset: str):
-    training = Training(path_to_dataset)
+def main(path_to_dataset: str, imgsz: int):
+    training = Training(path_to_dataset, imgsz)
     results = training.start_training()
     print(f"Training completed with validation accuracy: {results.val()}")
 
