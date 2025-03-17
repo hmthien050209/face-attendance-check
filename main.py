@@ -16,6 +16,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 def face_detection():
     # Open the default webcam
     cam = cv2.VideoCapture(0)
+    cam.set(cv2.CAP_PROP_FPS, 2)
     if not cam.isOpened():
         print("Error : Can not open the webcam")
         exit()
