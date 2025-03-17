@@ -1,9 +1,7 @@
 from datetime import datetime
 import cv2
-import numpy
-import torch
-import os
-from ultralytics import YOLO
+
+# from ultralytics import YOLO
 
 # Load a model
 # model = YOLO("yolo11n.pt")
