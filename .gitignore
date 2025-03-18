@@ -2,3 +2,4 @@ captured/
 *.pt
 *dataset/
 runs/
+*.zip

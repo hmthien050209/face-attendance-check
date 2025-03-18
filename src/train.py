@@ -4,11 +4,12 @@
 import glob
 import math
 import os
-from random import shuffle
 import shutil
 import sys
 from pathlib import Path
+from random import shuffle
 
+from colab import files
 from ultralytics import YOLO
 
 # Constants
@@ -114,7 +115,8 @@ class Training:
             seed=SEED,
         )
         # Save the trained model
-        model.save("trained_model.pt")
+        model.save("trained.pt")
+        files.save("trained.pt")
         return results
 
 

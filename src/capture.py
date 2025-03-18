@@ -1,21 +1,25 @@
 # capture.py - capturing user's faces
-from time import sleep
-import cv2
 import os
+import shutil
+from time import sleep
+
+import cv2
 
 # Constants
-DELAY = 5 / 1000  # 5 FPS
+DELAY = 30 / 1000  # 30 FPS
 
 # Face limits
-FACE_NUM = 40
-FACE_MIN_NEIGHBORS = 20
+FACE_NUM = 50
+FACE_MIN_NEIGHBORS = 15
 FACE_MIN_WIDTH = 128
 FACE_MIN_HEIGHT = 128
+FACE_PER_STYLE_COUNT = 10
 
 # Load the face cascade classifier
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
 )
+# Load YOLO pretrained model
 
 cv2.setUseOptimized(True)
 
@@ -29,9 +33,25 @@ def capture_faces(output_dir: str):
         exit()
 
     count = 0
+    idx = 0
+    # Create the guide for users
+    guide = [
+        "look straight",
+        "look slightly right",
+        "look slightly left",
+        "look slightly down",
+        "look slightly up",
+        "done",
+    ]
     print("Started capturing")
+    print(guide[idx])
+    print("Press any key to continue...")
     while count < FACE_NUM:
         ret, frame = cam.read()
+        # Boost brightness if necessary
+        frame = cv2.convertScaleAbs(frame, alpha=1.2, beta=50)
+
+        # Convert the frame to grayscale
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         faces = face_cascade.detectMultiScale(
@@ -46,16 +66,22 @@ def capture_faces(output_dir: str):
             count += 1
 
             # Resize the image to 320x320 pixels
-            frame = cv2.resize(frame[y : y + h, x : x + w], (320, 320))
+            resized_frame = cv2.resize(frame[y : y + h, x : x + w], (320, 320))
 
             # Save the face image
-            cv2.imwrite(f"{output_dir}/face_{count}.jpg", frame)
-
-            cv2.imshow("Face capture", frame)
+            cv2.imwrite(f"{output_dir}/face_{count}.jpg", resized_frame)
 
             print(f"Captured {count} faces")
 
-        sleep(DELAY)
+            if count % FACE_PER_STYLE_COUNT == 0:
+                if idx < len(guide):
+                    idx += 1
+                    print(guide[idx])
+                print("Press any key to continue...")
+                # wait for user input to continue to next style guide
+                input()
+
+        cv2.imshow("Face capture", frame)
 
         # Press 'q' to exit the loop
         if cv2.waitKey(1) == ord("q"):
@@ -73,6 +99,8 @@ def main():
         output_dir = f"captured/{name}/"
         os.makedirs(output_dir, exist_ok=True)
         capture_faces(output_dir)
+    shutil.make_archive("captured", "zip", "captured")
+    print("Captured faces are saved in a zip file named 'captured.zip'")
 
 
 if __name__ == "__main__":
