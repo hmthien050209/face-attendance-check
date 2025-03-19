@@ -93,14 +93,19 @@ def capture_faces(output_dir: str):
 
 
 def main():
-    num = int(input("Enter the number of people to capture: "))
-    for i in range(num):
-        name = input("Name: ")
-        output_dir = f"captured/{name}/"
-        os.makedirs(output_dir, exist_ok=True)
-        capture_faces(output_dir)
-    shutil.make_archive("captured", "zip", "captured")
-    print("Captured faces are saved in a zip file named 'captured.zip'")
+    while True:
+        print("c) Capture user's face")
+        print("q) Quit")
+        cmd = input("Enter the command: ")
+        if cmd == "c":
+            name = input("Name: ")
+            output_dir = f"captured/{name}/"
+            os.makedirs(output_dir, exist_ok=True)
+            capture_faces(output_dir)
+        elif cmd == "q":
+            shutil.make_archive("captured", "zip", "captured")
+            print("Captured faces are saved in a zip file named 'captured.zip'")
+            exit(0)
 
 
 if __name__ == "__main__":
