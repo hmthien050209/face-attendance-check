@@ -44,10 +44,14 @@ def capture_faces(output_dir: str):
         "done",
     ]
     print("Started capturing")
+   
     print(guide[idx])
     print("Press any key to continue...")
     while count < FACE_NUM:
-        ret, frame = cam.read()
+        ret,frame = cam.read()
+        if not ret:
+            print("Error: Frame capture failed.")
+            break
         # Boost brightness if necessary
         frame = cv2.convertScaleAbs(frame, alpha=1.2, beta=50)
 
@@ -77,11 +81,12 @@ def capture_faces(output_dir: str):
                 if idx < len(guide):
                     idx += 1
                     print(guide[idx])
+                
                 print("Press any key to continue...")
                 # wait for user input to continue to next style guide
                 input()
 
-        cv2.imshow("Face capture", frame)
+        #cv2.imshow("Face capture", frame)
 
         # Press 'q' to exit the loop
         if cv2.waitKey(1) == ord("q"):
