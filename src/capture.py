@@ -1,6 +1,7 @@
 # capture.py - capturing user's faces
 import os
 import shutil
+import requests
 from time import sleep
 
 import cv2
@@ -96,6 +97,42 @@ def capture_faces(output_dir: str):
     cam.release()
     cv2.destroyAllWindows()
 
+def post_username_to_api(username):
+    url = "http://localhost:8000/create/user"
+    param = {
+        "full_name" : username
+    }
+    # Make the POST request
+    try:
+        response = requests.post(url, params=param)
+        
+        # Check the response status code
+        if response.status_code == 200:
+            print("Request successful!")
+            print("Response:", response.json())  
+            return response.json()
+        else:
+            print(f"Request failed with status code {response.status_code}")
+            print("Response:", response.text)
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request: {e}")
+
+def get_user_uuid(uuid):
+    url = f"http://localhost:8000/user/{uuid}"
+    try : 
+        response = requests.get(url)
+        if response.status_code == 200 :
+            print("Request successful!")
+            print("Response:", response.json())  
+            return response.json()
+            
+        else : 
+            print(f"Request failed with status code {response.status_code}")
+            print("Response:", response.text)
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request: {e}")
+
 
 def main():
     while True:
@@ -104,14 +141,22 @@ def main():
         cmd = input("Enter the command: ")
         if cmd == "c":
             name = input("Name: ")
-            output_dir = f"captured/{name}/"
+            user = post_username_to_api(name)
+            if user is not None:
+                get_user_uuid(user['uuid'])
+            else :
+                print("user is none")
+            output_dir = f"captured/{user['uuid']}/"
             os.makedirs(output_dir, exist_ok=True)
             capture_faces(output_dir)
+            
+
+
         elif cmd == "q":
             shutil.make_archive("captured", "zip", "captured")
             print("Captured faces are saved in a zip file named 'captured.zip'")
             exit(0)
-
+        
 
 if __name__ == "__main__":
     main()
