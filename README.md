@@ -2,19 +2,26 @@
 
 This project is intended for internal use of PTNK 2024 - 2027 Interdisciplinary Informatics class.
 
-## Registration flow
+## How to use?
 
-Nhập tên --> Tạo folder --> Quét và crop bằng OpenCV --> Save ảnh vào trong folder
+### Capturing
 
-## TODOS:
+```sh
+python src/capture.py
+```
 
-### Currently
+### Training
 
-- Implement YOLO model
-- Implement OpenCV detection
+The following script will train the model and export the results to the `trained.pt` file in the current working directory.
 
-### In the future
+```sh
+python src/train.py <path_to_dataset> <img_sz>
+```
 
-- Implement an ASP.NET-based web API backend
-- Implement a Vue-based frontend
-- Implement retrain and reload models on admin's requests
+### Detecting
+
+The `trained.pt` file should be prepared inside the current working directory.
+
+```sh
+python src/main.py
+```
