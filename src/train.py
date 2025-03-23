@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from random import shuffle
 
-from colab import files
+from google.colab import files
 from ultralytics import YOLO
 
 # Constants
@@ -98,8 +98,8 @@ class Training:
 
     def start_training(self):
         print("Starting training")
-        # Load the pretrained yolo11l-cls model
-        model = YOLO("yolo11l-cls.pt")
+        # Load the pretrained yolo11s-cls model
+        model = YOLO("yolo11s-cls.pt")
         # Train the model
         results = model.train(
             data=self.path_to_dataset,
@@ -116,7 +116,7 @@ class Training:
         )
         # Save the trained model
         model.save("trained.pt")
-        files.save("trained.pt")
+        files.download("trained.pt")
         return results
 
 
